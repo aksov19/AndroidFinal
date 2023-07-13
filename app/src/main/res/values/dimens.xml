@@ -2,6 +2,7 @@
 <resources>
     <dimen name="font_size_large">24sp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_avatar_main_lrt">100dp</dimen>
     <dimen name="margin_avatar_main_bottom">24dp</dimen>
     <dimen name="padding_main">8dp</dimen>

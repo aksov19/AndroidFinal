@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "470851665156",
+    "project_id": "messengerapp-d07cb",
+    "storage_bucket": "messengerapp-d07cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470851665156:android:e4b0458b8005add1ed6451",
+        "android_client_info": {
+          "package_name": "ge.aksovreli.messengerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470851665156-2ea3gdhg0cq8k2dplufn5opa4ovohvfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWYHIc0tqTrEGIwwDOd9DQ0_eaf6qNJII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470851665156-2ea3gdhg0cq8k2dplufn5opa4ovohvfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

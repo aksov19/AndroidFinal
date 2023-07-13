@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    tools:context=".MainActivity">
+    tools:context=".views.SignInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,6 +64,22 @@
             android:textSize="@dimen/font_size_large"
             android:importantForAutofill="no" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signInButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_weight="0"
+            android:onClick="onSignIn"
+            android:text="@string/sign_in_btn_txt"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_large"
+            app:backgroundTint="@color/purple_blue"
+            app:cornerRadius="@dimen/corner_radius"
+            app:strokeColor="@android:color/transparent"
+            app:strokeWidth="2dp" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -86,6 +102,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_weight="0"
+            android:onClick="onSignUp"
             android:text="@string/sign_up_btn_txt"
             android:textColor="@color/black"
             android:textSize="@dimen/font_size_large"
