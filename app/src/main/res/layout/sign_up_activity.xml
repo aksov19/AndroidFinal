@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/avatarView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/margin_avatar_main_lrt"
+            android:layout_marginEnd="@dimen/margin_avatar_main_lrt"
+            android:layout_marginBottom="@dimen/margin_avatar_main_bottom"
+            android:layout_weight="0"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/avatar_description"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/avatar_image_placeholder" />
+
+        <EditText
+            android:id="@+id/nicknameField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:background="@drawable/cyan_text_border"
+            android:ems="10"
+            android:hint="@string/enter_your_nickname_hint"
+            android:inputType="textPersonName"
+            android:paddingTop="@dimen/padding_main"
+            android:paddingBottom="@dimen/padding_main"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size_large"
+            android:importantForAutofill="no"/>
+
+        <EditText
+            android:id="@+id/passwordField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_weight="0"
+            android:background="@drawable/cyan_text_border"
+            android:ems="10"
+            android:hint="@string/enter_your_password_hint"
+            android:inputType="textPassword"
+            android:paddingTop="@dimen/padding_main"
+            android:paddingBottom="@dimen/padding_main"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size_large"
+            android:importantForAutofill="no" />
+
+        <EditText
+            android:id="@+id/whatIDoField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_weight="0"
+            android:background="@drawable/cyan_text_border"
+            android:ems="10"
+            android:hint="@string/what_i_do_hint"
+            android:inputType="textPersonName"
+            android:paddingTop="@dimen/padding_main"
+            android:paddingBottom="@dimen/padding_main"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size_large"
+            android:importantForAutofill="no" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_weight="0"
+            android:text="@string/sign_up_btn_txt"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_large"
+            app:backgroundTint="@color/purple_blue"
+            app:cornerRadius="@dimen/corner_radius"
+            app:strokeColor="@android:color/transparent"
+            app:strokeWidth="2dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

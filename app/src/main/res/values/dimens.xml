@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_size_large">24sp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_avatar_main_lrt">100dp</dimen>
+    <dimen name="margin_avatar_main_bottom">24dp</dimen>
+    <dimen name="padding_main">8dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
+</resources>
