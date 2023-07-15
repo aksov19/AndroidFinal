@@ -13,7 +13,7 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.sign_in_activity)
+        setContentView(R.layout.activity_profile)
         binding = SignInActivityBinding.inflate(layoutInflater)
     }
 
