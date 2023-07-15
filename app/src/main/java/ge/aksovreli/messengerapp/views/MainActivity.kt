@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -22,8 +23,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun chooseActivity(){
-        val intent = Intent(this, SignInActivity::class.java)
-        startActivity(intent)
+        val currentUser = Firebase.auth.currentUser
+
+        // TODO: change start page according to saved user
+        if (currentUser == null) {
+            val intent = Intent(this, SignInActivity::class.java)
+            startActivity(intent)
+            println("user was not saved")
+        } else {
+            val intent = Intent(this, SignInActivity::class.java)
+            startActivity(intent)
+            println("user was saved")
+        }
 
         finish()
     }
