@@ -7,4 +7,14 @@
     <dimen name="margin_avatar_main_bottom">24dp</dimen>
     <dimen name="padding_main">8dp</dimen>
     <dimen name="corner_radius">8dp</dimen>
+    <dimen name="prof_btn_width">160dp</dimen>
+    <dimen name="fab_cradle_margin">8dp</dimen>
+    <dimen name="fab_radius">32dp</dimen>
+    <dimen name="bar_inset_start">0dp</dimen>
+    <dimen name="search_img_height">200dp</dimen>
+    <dimen name="search_edt_height">60dp</dimen>
+    <dimen name="search_edt_marg">25dp</dimen>
+    <dimen name="search_bar_height">120dp</dimen>
+    <dimen name="search_start_padding">20dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

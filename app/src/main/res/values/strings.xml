@@ -7,4 +7,14 @@
     <string name="enter_your_password_hint">Enter your password</string>
     <string name="what_i_do_hint">What I Do</string>
     <string name="sign_in_btn_txt">Sign in</string>
+    <string name="update_btn_text">Update</string>
+    <string name="sign_out_btn_txt">sign out</string>
+    <string name="show_user_list">show user list</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_hint">search</string>
+    <string name="search_hint_text">search</string>
+
 </resources>

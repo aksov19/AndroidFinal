@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:contentInsetStart="@dimen/bar_inset_start"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="@dimen/fab_cradle_margin"
+            app:fabCradleRoundedCornerRadius="@dimen/fab_radius"
+            app:hideOnScroll="true"
+
+            app:menuAlignmentMode="start">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:weightSum="3">
+
+                        <ImageButton
+                            android:id="@+id/first_menu_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_home_24"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                        <View
+                            android:id="@+id/placeholder"
+                            android:layout_width="5dp"
+                            android:layout_height="0dp"
+                            android:visibility="invisible"
+                            android:layout_weight="1"/>
+
+
+                        <ImageButton
+                            android:id="@+id/fourth_menu_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_settings_24"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                </LinearLayout>
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple_blue"
+            app:layout_anchor="@id/bottomAppBar"
+            app:srcCompat="@drawable/baseline_add_24"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
