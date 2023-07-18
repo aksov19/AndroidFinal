@@ -2,7 +2,7 @@ package ge.aksovreli.messengerapp.viewmodels.chat
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import ge.aksovreli.messengerapp.ChatItem
+import ge.aksovreli.messengerapp.MessageItem
 
 class ChatViewModel: ViewModel() {
     companion object {
@@ -11,11 +11,11 @@ class ChatViewModel: ViewModel() {
         }
     }
 
-    fun getMessagesBetween(uid1: String, uid2: String) {
+    fun getMessagesBetweenUsers(uid1: String, uid2: String) {
 
     }
 
-    fun addMessageBetween(uid1: String, uid2: String, chatItem: ChatItem) {
+    fun addMessageBetweenUsers(uid1: String, uid2: String, messageItem: MessageItem) {
 
     }
 }

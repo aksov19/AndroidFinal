@@ -1,7 +1,5 @@
-package ge.aksovreli.messengerapp
+package ge.aksovreli.messengerapp.models
 
 data class ChatItem (
-    var senderUid: String,
-    var message: String,
-    var time: String
+    var name: String
 )

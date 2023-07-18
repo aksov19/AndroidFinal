@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
+import ge.aksovreli.messengerapp.models.ChatItem
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         chats_rv = view.findViewById(R.id.chats_rv)
         val chat_list = arrayListOf(ChatItem("11111111111"), ChatItem("2222222222"), ChatItem("333333333333"), ChatItem("44444444444444"), ChatItem("5555555555"), ChatItem("6666666666666666"))
-        chats_rv.adapter = ChatAdapter(chat_list)
+        chats_rv.adapter = ChatItemAdapter(chat_list)
 
     }
 
