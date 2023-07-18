@@ -2,6 +2,7 @@ package ge.aksovreli.messengerapp.views
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
@@ -10,10 +11,17 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
+import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
 import kotlin.math.abs
 
 class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
     private lateinit var binding: ChatActivityBinding
+
+    private val viewModel: ChatViewModel by viewModels {
+        ChatViewModel.getViewModelFactory(
+            applicationContext
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
