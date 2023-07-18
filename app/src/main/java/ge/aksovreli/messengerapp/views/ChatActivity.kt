@@ -9,6 +9,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import ge.aksovreli.messengerapp.ChatAdapter
+import ge.aksovreli.messengerapp.MessageItem
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
@@ -34,6 +36,30 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
         binding.toolbar.setNavigationOnClickListener {
             Toast.makeText(this, "navigation button clicked", Toast.LENGTH_LONG).show()
         }
+
+        binding.MessagesRecyclerView.adapter = ChatAdapter(
+            arrayListOf(
+                MessageItem("1", "test1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("1", "testlaskfhiopwqhnflkas alskfgbhnoaifgb lasnk;jfnasol;ifhasjklfnas;lkfna sfasoifnas knasfklasn asfnkaslkf asfnaslkf1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("2", "testlaskfhiopwqhnflkas alskfgbhnoaifgb lasnk;jfnasol;ifhasjklfnas;lkfna sfasoifnas knasfklasn asfnkaslkf asfnaslkf1", "1'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("1", "test1", "2'"),
+                MessageItem("2", "test1", "1'"),
+                MessageItem("2", "test1", "1'"),
+            ),
+            "1"
+        )
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {

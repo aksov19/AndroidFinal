@@ -1,10 +1,12 @@
 package ge.aksovreli.messengerapp
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -33,16 +35,24 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
         private var timeRight = view.findViewById<TextView>(R.id.timeViewR)
 
         fun bindItem(item: MessageItem, signedInUid: String) {
+            messageView.text = item.message
+
             if (item.senderUid == signedInUid) {
                 spaceLeft.visibility = View.VISIBLE
                 timeLeft.visibility = View.VISIBLE
+
                 messageView.setBackgroundResource(R.drawable.chat_item_background_right)
+                messageView.setTextColor(Color.parseColor("#FFFFFF"))
+
                 spaceRight.visibility = View.GONE
                 timeRight.visibility = View.GONE
             } else {
                 spaceLeft.visibility = View.GONE
                 timeLeft.visibility = View.GONE
+
                 messageView.setBackgroundResource(R.drawable.chat_item_background_left)
+                messageView.setTextColor(Color.parseColor("#000000"))
+
                 spaceRight.visibility = View.VISIBLE
                 timeRight.visibility = View.VISIBLE
             }
