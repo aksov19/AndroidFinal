@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="192dp">
+
+<!--        <com.google.android.material.appbar.SubtitleCollapsingToolbarLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:contentScrim="?attr/colorPrimary"-->
+<!--            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"-->
+<!--            app:subtitle="Position Here"-->
+<!--            app:title="Name Here"-->
+<!--            app:toolbarId="@+id/toolbar">-->
+
+
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?attr/actionBarSize"-->
+<!--                app:layout_collapseMode="pin"-->
+<!--                app:navigationIcon="@drawable/baseline_add_24">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="?attr/actionBarSize"-->
+<!--                    android:layout_height="?attr/actionBarSize"-->
+<!--                    android:layout_gravity="top|end"-->
+<!--                    android:layout_marginEnd="32dp"-->
+<!--                    android:layout_marginBottom="32dp"-->
+<!--                    android:adjustViewBounds="true"-->
+<!--                    app:srcCompat="@drawable/avatar_image_placeholder" />-->
+
+<!--            </androidx.appcompat.widget.Toolbar>-->
+
+
+<!--        </com.google.android.material.appbar.SubtitleCollapsingToolbarLayout>-->
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:toolbarId="@+id/toolbar">
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/baseline_add_24" />
+
+            <LinearLayout
+                android:id="@+id/UserInfoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/chat_info_margin"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/chat_info_padding">
+
+                <TextView
+                    android:id="@+id/nameView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name Here"
+                    android:textSize="@dimen/font_size_large"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/proffesionView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Proffesion Here" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/userImageView"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/chat_info_margin"
+                android:adjustViewBounds="true"
+                android:paddingBottom="@dimen/chat_info_padding"
+                app:srcCompat="@drawable/avatar_image_placeholder" />
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/chat_message_hint" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
