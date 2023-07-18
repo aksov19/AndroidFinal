@@ -8,6 +8,8 @@ import android.widget.Space
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val signedInUid: String) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
@@ -35,8 +37,14 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
         private var timeRight = view.findViewById<TextView>(R.id.timeViewR)
 
         fun bindItem(item: MessageItem, signedInUid: String) {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = item.time!!
+            val timeText = calendar.get(Calendar.HOUR_OF_DAY).toString() + ":" + calendar.get(Calendar.MINUTE).toString()
             messageView.text = item.message
+            timeLeft.text = timeText
+            timeRight.text = timeText
 
+            // TODO: add time setting
             if (item.senderUid == signedInUid) {
                 spaceLeft.visibility = View.VISIBLE
                 timeLeft.visibility = View.VISIBLE

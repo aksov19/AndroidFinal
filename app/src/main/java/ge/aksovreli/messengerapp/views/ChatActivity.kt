@@ -1,6 +1,14 @@
 package ge.aksovreli.messengerapp.views
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.view.View.OnClickListener
+import android.view.View.OnKeyListener
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,14 +17,20 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.ChatAdapter
 import ge.aksovreli.messengerapp.MessageItem
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
+import java.security.Key
 import kotlin.math.abs
 
-class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
+class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, OnClickListener {
     private lateinit var binding: ChatActivityBinding
 
     private val viewModel: ChatViewModel by viewModels {
@@ -25,6 +39,14 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
         )
     }
 
+    private fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private lateinit var userUid: String
+    private lateinit var otherUid: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
@@ -32,36 +54,70 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
         setContentView(binding.root)
 
         binding.appbar.addOnOffsetChangedListener(this)
+        binding.toolbar.setNavigationOnClickListener(this)
 
-        binding.toolbar.setNavigationOnClickListener {
-            Toast.makeText(this, "navigation button clicked", Toast.LENGTH_LONG).show()
+
+        // TODO: add getting signed in user
+        userUid = "1"
+
+        // TODO: add getting the other user uid, name, profession and image, and updating the display
+        otherUid = "2"
+
+        // TODO: touch up visuals
+
+
+        // Loading messages first time
+        loadMessages()
+
+        // Add message list listener
+        val messagesDBPath = if (userUid > otherUid) {
+            Firebase.database.getReference("messages").child(userUid).child(otherUid)
+        } else {
+            Firebase.database.getReference("messages").child(otherUid).child(userUid)
         }
+        messagesDBPath.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                loadMessages()
+            }
 
-        binding.MessagesRecyclerView.adapter = ChatAdapter(
-            arrayListOf(
-                MessageItem("1", "test1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("1", "testlaskfhiopwqhnflkas alskfgbhnoaifgb lasnk;jfnasol;ifhasjklfnas;lkfna sfasoifnas knasfklasn asfnkaslkf asfnaslkf1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("2", "testlaskfhiopwqhnflkas alskfgbhnoaifgb lasnk;jfnasol;ifhasjklfnas;lkfna sfasoifnas knasfklasn asfnkaslkf asfnaslkf1", "1'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("1", "test1", "2'"),
-                MessageItem("2", "test1", "1'"),
-                MessageItem("2", "test1", "1'"),
-            ),
-            "1"
-        )
+            override fun onCancelled(error: DatabaseError) {}
+        })
+
+        // Add message send listener on enter key
+        binding.MessageInputEditText.setOnKeyListener { view, actionId, event ->
+            if (
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                val txt = binding.MessageInputEditText.text.toString()
+                binding.MessageInputEditText.setText("")
+                view.hideKeyboard()
+
+                val msg = MessageItem(userUid, txt, System.currentTimeMillis())
+
+                viewModel.addMessageBetweenUsers(userUid, otherUid, msg).observe(this) { errorMsg ->
+                    if (errorMsg != null)
+                        Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                }
+
+                return@setOnKeyListener true
+            }
+            false
+        }
     }
 
+    private fun loadMessages() {
+        viewModel.getMessagesBetweenUsers(userUid, otherUid).observe(this) {
+            if (it.first != null){
+                Toast.makeText(this, it.first, Toast.LENGTH_LONG).show()
+            }
+
+            val adapter = ChatAdapter(it.second, userUid)
+            binding.MessagesRecyclerView.adapter = adapter
+        }
+    }
+
+    // Controls toolbar collapse and expand animations
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         if (appBarLayout == null)
             return
@@ -81,5 +137,11 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
 
         binding.userImageView.updatePadding(bottom = newBottomPadding.toInt())
         binding.UserInfoLayout.updatePadding(bottom = newBottomPadding.toInt(), left = newLeftPadding.toInt())
+    }
+
+    // Moves to previous page when navigation button is clicked
+    override fun onClick(p0: View?) {
+        // TODO: add logic when navigation button is clicked (moving back a page)
+        Toast.makeText(this, "navigation button clicked", Toast.LENGTH_LONG).show()
     }
 }

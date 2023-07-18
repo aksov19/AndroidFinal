@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/baseline_add_24" />
+                app:navigationIcon="?attr/actionModeCloseDrawable" />
 
             <LinearLayout
                 android:id="@+id/UserInfoLayout"
@@ -96,6 +96,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/MessageInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/chat_message_hint" />
