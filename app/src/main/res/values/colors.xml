@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="cyan">#DEFBFF</color>
     <color name="purple_blue">#CE4436FF</color>
+    <color name="chat_blue">#0B50FF</color>
     <color name="transparent">#00000000</color>
 </resources>

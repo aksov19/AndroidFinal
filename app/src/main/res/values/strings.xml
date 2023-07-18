@@ -17,5 +17,8 @@
     <string name="search_hint">search</string>
     <string name="search_hint_text">search</string>
     <string name="chat_message_hint">Message</string>
+    <string name="time_left">12:30</string>
+    <string name="time_right">12:30</string>
+    <string name="message">testing huh?</string>
 
 </resources>
