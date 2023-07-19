@@ -1,6 +1,5 @@
 package ge.aksovreli.messengerapp.views
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
@@ -12,11 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginStart
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -27,10 +23,9 @@ import ge.aksovreli.messengerapp.MessageItem
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
-import java.security.Key
 import kotlin.math.abs
 
-class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, OnClickListener {
+class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, OnClickListener, OnKeyListener {
     private lateinit var binding: ChatActivityBinding
 
     private val viewModel: ChatViewModel by viewModels {
@@ -55,21 +50,18 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
 
         binding.appbar.addOnOffsetChangedListener(this)
         binding.toolbar.setNavigationOnClickListener(this)
+        binding.MessageInputEditText.setOnKeyListener(this)
 
 
-        // TODO: add getting signed in user
+        // TODO: add getting signed in user and other user
         userUid = "1"
-
-        // TODO: add getting the other user uid, name, profession and image, and updating the display
         otherUid = "2"
 
-        // TODO: touch up visuals
-
-
-        // Loading messages first time
+        // Loading info first time
+        loadOtherUser()
         loadMessages()
 
-        // Add message list listener
+        // Add message list update listener
         val messagesDBPath = if (userUid > otherUid) {
             Firebase.database.getReference("messages").child(userUid).child(otherUid)
         } else {
@@ -82,27 +74,17 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
 
-        // Add message send listener on enter key
-        binding.MessageInputEditText.setOnKeyListener { view, actionId, event ->
-            if (
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
-            ) {
-                val txt = binding.MessageInputEditText.text.toString()
-                binding.MessageInputEditText.setText("")
-                view.hideKeyboard()
-
-                val msg = MessageItem(userUid, txt, System.currentTimeMillis())
-
-                viewModel.addMessageBetweenUsers(userUid, otherUid, msg).observe(this) { errorMsg ->
-                    if (errorMsg != null)
-                        Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
-                }
-
-                return@setOnKeyListener true
+    private fun loadOtherUser() {
+        viewModel.getUserByUid(otherUid).observe(this) {
+            if (it.first != null) {
+                Toast.makeText(this, it.first, Toast.LENGTH_LONG).show()
+            } else {
+                binding.nameView.text = it.second?.nickname ?: ""
+                binding.proffesionView.text = it.second?.profession ?: ""
+                // TODO: replace image too
             }
-            false
         }
     }
 
@@ -136,12 +118,34 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
         newLeftPadding *= percentageAbs
 
         binding.userImageView.updatePadding(bottom = newBottomPadding.toInt())
-        binding.UserInfoLayout.updatePadding(bottom = newBottomPadding.toInt(), left = newLeftPadding.toInt())
+        binding.UserInfoLayout.updatePadding(bottom = newBottomPadding.toInt(), left = (newLeftPadding * 1.5).toInt())
     }
 
     // Moves to previous page when navigation button is clicked
     override fun onClick(p0: View?) {
         // TODO: add logic when navigation button is clicked (moving back a page)
         Toast.makeText(this, "navigation button clicked", Toast.LENGTH_LONG).show()
+    }
+
+    // Adds message send listener on enter key
+    override fun onKey(view: View?, actionId: Int, event: KeyEvent?): Boolean {
+        if (
+            actionId == EditorInfo.IME_ACTION_DONE ||
+            (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+        ) {
+            val txt = binding.MessageInputEditText.text.toString()
+            binding.MessageInputEditText.setText("")
+            view!!.hideKeyboard()
+
+            val msg = MessageItem(userUid, txt, System.currentTimeMillis())
+
+            viewModel.addMessageBetweenUsers(userUid, otherUid, msg).observe(this) { errorMsg ->
+                if (errorMsg != null)
+                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+            }
+
+            return true
+        }
+        return false
     }
 }

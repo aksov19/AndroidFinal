@@ -10,6 +10,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.MessageItem
+import ge.aksovreli.messengerapp.models.User
 import kotlinx.coroutines.launch
 
 class ChatViewModel: ViewModel() {
@@ -17,6 +18,21 @@ class ChatViewModel: ViewModel() {
         fun getViewModelFactory(context: Context): ChatViewModelFactory {
             return ChatViewModelFactory(context)
         }
+    }
+
+    fun getUserByUid(uid: String): LiveData<Pair<String?, User?>> {
+        val ret = MutableLiveData<Pair<String?, User?>>()
+
+        viewModelScope.launch {
+            val userDB = Firebase.database.getReference("users").child(uid)
+            userDB.get().addOnSuccessListener { snapshot ->
+                ret.postValue(Pair(null, snapshot.getValue(User::class.java)))
+            }.addOnFailureListener {
+                ret.postValue(Pair(it.message, null))
+            }
+        }
+
+        return ret
     }
 
     fun getMessagesBetweenUsers(uid1: String, uid2: String): LiveData<Pair<String?, ArrayList<MessageItem>>> {

@@ -23,7 +23,7 @@ class SignUpViewModel: ViewModel() {
 
         viewModelScope.launch {
             val auth = Firebase.auth
-            auth.createUserWithEmailAndPassword(user.email, user.password)
+            auth.createUserWithEmailAndPassword(user.email!!, user.password!!)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val usersDB = Firebase.database.getReference("users")

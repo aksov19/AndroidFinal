@@ -23,7 +23,7 @@ class SignInViewModel: ViewModel() {
 
         viewModelScope.launch {
             val auth = Firebase.auth
-            auth.signInWithEmailAndPassword(user.email, user.password)
+            auth.signInWithEmailAndPassword(user.email!!, user.password!!)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         errorMessage.postValue(null)

@@ -10,12 +10,13 @@
         android:id="@+id/appbar"
 
         android:layout_width="match_parent"
-        android:layout_height="192dp">
+        android:layout_height="@dimen/char_appbar_height">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
+            android:background="@color/chat_blue"
+            app:contentScrim="@color/chat_blue"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@+id/toolbar">
 
@@ -42,6 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Name Here"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/font_size_large"
                     android:textStyle="bold" />
 
@@ -49,7 +51,8 @@
                     android:id="@+id/proffesionView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Proffesion Here" />
+                    android:text="Proffesion Here"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <ImageView
@@ -89,16 +92,20 @@
         android:id="@+id/bottomAppBar3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" >
+        android:layout_gravity="bottom"
+        android:paddingEnd="@dimen/chat_info_margin">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:boxBackgroundColor="@color/transparent"
+            app:boxBackgroundMode="filled">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/MessageInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/chat_msg_input_background"
                 android:hint="@string/chat_message_hint" />
         </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>

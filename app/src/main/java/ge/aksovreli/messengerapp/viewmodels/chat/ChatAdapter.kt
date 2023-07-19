@@ -43,8 +43,7 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
             messageView.text = item.message
             timeLeft.text = timeText
             timeRight.text = timeText
-
-            // TODO: add time setting
+            
             if (item.senderUid == signedInUid) {
                 spaceLeft.visibility = View.VISIBLE
                 timeLeft.visibility = View.VISIBLE
