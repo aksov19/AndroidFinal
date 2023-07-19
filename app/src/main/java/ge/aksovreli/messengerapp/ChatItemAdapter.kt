@@ -3,13 +3,13 @@ package ge.aksovreli.messengerapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import ge.aksovreli.messengerapp.models.ChatItem
 
 
-class ChatAdapter(chatItems: ArrayList<ChatItem>) :
-    RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
+    RecyclerView.Adapter<ChatItemAdapter.ChatItemViewHolder>() {
     private val chatItems: ArrayList<ChatItem>
 
     // Constructor to initialize the chat items list
@@ -18,14 +18,14 @@ class ChatAdapter(chatItems: ArrayList<ChatItem>) :
     }
 
     // Create a ViewHolder for the chat item layout
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val itemView: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.chat_item, parent, false)
-        return ChatViewHolder(itemView)
+            .inflate(R.layout.chat_message_item, parent, false)
+        return ChatItemViewHolder(itemView)
     }
 
     // Bind data to the ViewHolder
-    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ChatItemViewHolder, position: Int) {
         val chatItem: ChatItem = chatItems[position]
         holder.nameTextView.setText(chatItem.name)
     }
@@ -36,8 +36,8 @@ class ChatAdapter(chatItems: ArrayList<ChatItem>) :
     }
 
     // ViewHolder class for caching views
-    class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        var profileImageView: ImageView
+    class ChatItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        //        var profileImageView: ImageView
         var nameTextView: TextView
 //        var lastMessageTextView: TextView
 

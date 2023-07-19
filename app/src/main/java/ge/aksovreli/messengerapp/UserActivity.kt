@@ -1,9 +1,12 @@
 package ge.aksovreli.messengerapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.viewpager2.widget.ViewPager2
+import ge.aksovreli.messengerapp.views.ChatActivity
+import ge.aksovreli.messengerapp.views.SignInActivity
 
 class UserActivity : AppCompatActivity() {
 
@@ -32,6 +35,5 @@ class UserActivity : AppCompatActivity() {
             }
         }
     }
-
 
 }

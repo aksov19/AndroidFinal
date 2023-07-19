@@ -30,6 +30,9 @@
         <activity
             android:name=".views.SignUpActivity"
             android:exported="false" />
+        <activity
+            android:name=".views.ChatActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
