@@ -20,5 +20,6 @@
     <string name="time_left">12:30</string>
     <string name="time_right">12:30</string>
     <string name="message">testing huh?</string>
+    <string name="nada">nada</string>
 
 </resources>

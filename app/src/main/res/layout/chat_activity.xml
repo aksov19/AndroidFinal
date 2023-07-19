@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
 
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -42,7 +43,6 @@
                     android:id="@+id/nameView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name Here"
                     android:textColor="@color/white"
                     android:textSize="@dimen/font_size_large"
                     android:textStyle="bold" />
@@ -51,7 +51,6 @@
                     android:id="@+id/proffesionView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Proffesion Here"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -62,6 +61,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginEnd="@dimen/chat_info_margin"
                 android:adjustViewBounds="true"
+                android:contentDescription="@string/nada"
                 android:paddingBottom="@dimen/chat_info_padding"
                 app:srcCompat="@drawable/avatar_image_placeholder" />
 
@@ -93,7 +93,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:paddingEnd="@dimen/chat_info_margin">
+        android:paddingEnd="@dimen/chat_info_margin"
+        tools:ignore="RtlSymmetry">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -106,7 +107,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/chat_msg_input_background"
-                android:hint="@string/chat_message_hint" />
+                android:hint="@string/chat_message_hint"
+                android:textColorHint="#546E7A"
+                tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>
 
