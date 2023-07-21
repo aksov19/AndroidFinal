@@ -20,7 +20,7 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
     // Create a ViewHolder for the chat item layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val itemView: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.chat_message_item, parent, false)
+            .inflate(R.layout.chat_item, parent, false)
         return ChatItemViewHolder(itemView)
     }
 

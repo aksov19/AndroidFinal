@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ge.aksovreli.messengerapp.R
+import ge.aksovreli.messengerapp.UserActivity
 import ge.aksovreli.messengerapp.databinding.SignInActivityBinding
 import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.signin.SignInViewModel
@@ -38,14 +39,20 @@ class SignInActivity : AppCompatActivity() {
 
         val user = User(
             nickname = nickname,
-            password = password
+            password = password,
         )
 
         viewModel.signInUser(user).observe(this) { errorMsg ->
             if (errorMsg != null) {
                 Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, UserActivity::class.java)
+                startActivity(intent)
+                finish()
             }
-            // TODO: else redirect to user's page
         }
     }
 
