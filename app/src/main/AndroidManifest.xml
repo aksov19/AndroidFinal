@@ -12,7 +12,7 @@
         android:theme="@style/Theme.MessengerApp"
         tools:targetApi="31">
         <activity
-            android:name=".UserActivity"
+            android:name=".views.UserActivity"
             android:exported="true">
         </activity>
         <activity

@@ -1,4 +1,4 @@
-package ge.aksovreli.messengerapp
+package ge.aksovreli.messengerapp.views
 
 import android.app.Activity
 import android.content.Intent
@@ -21,8 +21,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import ge.aksovreli.messengerapp.models.User as myUser
 import com.bumptech.glide.Glide
+import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.User
-import ge.aksovreli.messengerapp.views.SignInActivity
 
 class SettingsFragment : Fragment() {
 

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import ge.aksovreli.messengerapp.R
-import ge.aksovreli.messengerapp.UserActivity
 import ge.aksovreli.messengerapp.databinding.SignInActivityBinding
 import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.signin.SignInViewModel

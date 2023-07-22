@@ -3,8 +3,10 @@ package ge.aksovreli.messengerapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ge.aksovreli.messengerapp.models.ChatItem
 
 
@@ -27,7 +29,15 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
     // Bind data to the ViewHolder
     override fun onBindViewHolder(holder: ChatItemViewHolder, position: Int) {
         val chatItem: ChatItem = chatItems[position]
-        holder.nameTextView.setText(chatItem.name)
+        holder.nameTextView.text = chatItem.name
+        holder.lastMessageView.text = chatItem.last_message
+        holder.dateTextView.text = chatItem.date
+        if (chatItem.avatar != "") {
+            Glide.with(holder.itemView.context)
+                .load(chatItem.avatar)
+                .circleCrop()
+                .into(holder.avatarView)
+        }
     }
 
     // Return the number of chat items
@@ -37,14 +47,16 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
 
     // ViewHolder class for caching views
     class ChatItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //        var profileImageView: ImageView
+        var avatarView: ImageView
         var nameTextView: TextView
-//        var lastMessageTextView: TextView
+        var lastMessageView: TextView
+        var dateTextView: TextView
 
         init {
-//            profileImageView = itemView.findViewById(R.id.profileImageView)
+            avatarView = itemView.findViewById(R.id.avatarView)
             nameTextView = itemView.findViewById(R.id.nameTextView)
-//            lastMessageTextView = itemView.findViewById(R.id.lastMessageTextView)
+            lastMessageView = itemView.findViewById(R.id.lastMessageView)
+            dateTextView = itemView.findViewById(R.id.dateView)
         }
     }
 }
