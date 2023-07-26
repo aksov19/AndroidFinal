@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.ChatAdapter
-import ge.aksovreli.messengerapp.MessageItem
+import ge.aksovreli.messengerapp.models.MessageItem
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
