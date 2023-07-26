@@ -102,14 +102,35 @@
             app:boxBackgroundColor="@color/transparent"
             app:boxBackgroundMode="filled">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/MessageInputEditText"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/chat_msg_input_background"
-                android:hint="@string/chat_message_hint"
-                android:textColorHint="#546E7A"
-                tools:ignore="TextContrastCheck" />
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/MessageInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/chat_message_hint"
+                    android:paddingStart="@dimen/chat_msg_padding_lr"
+                    android:paddingEnd="@dimen/chat_msg_padding_lr"
+                    android:textColorHint="#546E7A"
+                    tools:ignore="TextContrastCheck" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:background="@color/transparent"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    app:srcCompat="@android:drawable/ic_btn_speak_now"
+                    android:contentDescription="@string/mic_button_desc" />
+            </LinearLayout>
+
         </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>
 

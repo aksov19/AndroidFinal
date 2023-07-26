@@ -20,7 +20,7 @@
     <dimen name="chat_info_margin">16dp</dimen>
     <dimen name="chat_info_padding">20dp</dimen>
     <dimen name="chat_item_space">10dp</dimen>
-    <dimen name="chat_item_radius">140dp</dimen>
+    <dimen name="chat_item_radius">70dp</dimen>
     <dimen name="chat_msg_padding_tb">20dp</dimen>
     <dimen name="chat_msg_padding_lr">30dp</dimen>
     <dimen name="chat_msg_font_size">12sp</dimen>
