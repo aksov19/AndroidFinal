@@ -1,7 +1,13 @@
 package ge.aksovreli.messengerapp.views
 
+import android.Manifest
 import android.content.Context
+import android.media.MediaPlayer
+import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore.Audio.Media
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -11,22 +17,34 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.core.view.updatePadding
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.material.appbar.AppBarLayout
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import ge.aksovreli.messengerapp.ChatAdapter
 import ge.aksovreli.messengerapp.models.MessageItem
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
+import ge.aksovreli.messengerapp.models.User
+import ge.aksovreli.messengerapp.viewmodels.chat.AudioManager
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.math.abs
 
-class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, OnClickListener, OnKeyListener {
+class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, OnClickListener {
     private lateinit var binding: ChatActivityBinding
+    private lateinit var audioManager: AudioManager
 
     private val viewModel: ChatViewModel by viewModels {
         ChatViewModel.getViewModelFactory(
@@ -48,18 +66,23 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
         binding = ChatActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.appbar.addOnOffsetChangedListener(this)
-        binding.toolbar.setNavigationOnClickListener(this)
-        binding.MessageInputEditText.setOnKeyListener(this)
-
-
         // TODO: add getting signed in user and other user
         userUid = "1"
         otherUid = "2"
 
-        // Loading info first time
         loadOtherUser()
         loadMessages()
+        setListeners()
+        askForPermissions()
+
+        // TODO: remove this part later
+        val user = User("hi hello", "superduper", )
+        Firebase.auth.signInWithEmailAndPassword(user.email!!, user.password!!)
+    }
+
+    private fun setListeners() {
+        binding.appbar.addOnOffsetChangedListener(this)
+        binding.toolbar.setNavigationOnClickListener(this)
 
         // Add message list update listener
         val messagesDBPath = if (userUid > otherUid) {
@@ -74,6 +97,20 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    private fun askForPermissions() {
+        // ask for mic, read, write permissions
+        val permissions = arrayListOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+        }
+        ActivityCompat.requestPermissions(this, permissions.toArray(arrayOf()), 111)
+        audioManager = AudioManager(this)
     }
 
     private fun loadOtherUser() {
@@ -94,7 +131,7 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
                 Toast.makeText(this, it.first, Toast.LENGTH_LONG).show()
             }
 
-            val adapter = ChatAdapter(it.second, userUid)
+            val adapter = ChatAdapter(it.second, userUid, audioManager)
             binding.MessagesRecyclerView.adapter = adapter
         }
     }
@@ -128,24 +165,57 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
     }
 
     // Adds message send listener on enter key
-    override fun onKey(view: View?, actionId: Int, event: KeyEvent?): Boolean {
-        if (
-            actionId == EditorInfo.IME_ACTION_DONE ||
-            (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
-        ) {
-            val txt = binding.MessageInputEditText.text.toString()
-            binding.MessageInputEditText.setText("")
-            view!!.hideKeyboard()
+    fun onSendButtonPressed(view: View) {
+        val txt = binding.MessageInputEditText.text.toString()
+        binding.MessageInputEditText.setText("")
+        view.hideKeyboard()
 
-            val msg = MessageItem(userUid, txt, System.currentTimeMillis())
+        val curTime = System.currentTimeMillis()
+        val msg = MessageItem(userUid, txt, curTime)
+        val audioSavePath = "audio/${userUid}_${curTime}.3gp"
 
+        if (audioManager.audioRecorded) {
+//            Toast.makeText(this, "AUDIO RECORDED", Toast.LENGTH_LONG).show()
+            uploadAudio(audioSavePath).observe(this) { success ->
+                // TODO: process proper errors
+                if (success)
+                    msg.audioUri = audioSavePath
+
+                viewModel.addMessageBetweenUsers(userUid, otherUid, msg).observe(this) { errorMsg ->
+                    if (errorMsg != null)
+                        Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                }
+            }
+        } else {
+//            Toast.makeText(this, "AUDIO NOT RECORDED", Toast.LENGTH_LONG).show()
             viewModel.addMessageBetweenUsers(userUid, otherUid, msg).observe(this) { errorMsg ->
                 if (errorMsg != null)
                     Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
             }
-
-            return true
         }
-        return false
+    }
+
+
+    fun onVoiceMessageClick(view: View) {
+        val errMsg = audioManager.toggleAudioRecording()
+        if (errMsg != null)
+            Toast.makeText(this, errMsg, Toast.LENGTH_LONG).show()
+    }
+
+
+    fun uploadAudio(savePath: String): LiveData<Boolean> {
+        val audioStorageRef = Firebase.storage.reference
+        val saveRef = audioStorageRef.child(savePath)
+
+        val ret = MutableLiveData<Boolean>()
+        
+        // TODO: return proper errors
+        saveRef.putFile(audioManager.recordedFile.toUri()).addOnSuccessListener {
+            ret.postValue(true)
+        }.addOnFailureListener {
+            ret.postValue(false)
+        }
+
+        return ret
     }
 }

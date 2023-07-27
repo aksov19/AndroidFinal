@@ -21,5 +21,8 @@
     <string name="time_right">12:30</string>
     <string name="message">testing huh?</string>
     <string name="nada">nada</string>
+    <string name="mic_button_desc">mic_button</string>
+    <string name="play_voice_message_desc">play voice message</string>
+    <string name="send_button_dsc">send_button</string>
 
 </resources>

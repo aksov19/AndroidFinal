@@ -1,6 +1,11 @@
 package ge.aksovreli.messengerapp.viewmodels.chat
 
 import android.content.Context
+import android.media.MediaPlayer
+import android.media.MediaRecorder
+import android.os.Environment
+import android.provider.MediaStore.Audio.Media
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +15,7 @@ import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.models.MessageItem
 import ge.aksovreli.messengerapp.models.User
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ChatViewModel: ViewModel() {
     companion object {
