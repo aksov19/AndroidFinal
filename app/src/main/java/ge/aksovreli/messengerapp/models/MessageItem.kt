@@ -1,4 +1,4 @@
-package ge.aksovreli.messengerapp
+package ge.aksovreli.messengerapp.models
 
 data class MessageItem (
     var senderUid: String? = "",

@@ -21,11 +21,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import ge.aksovreli.messengerapp.models.User as myUser
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.EmailAuthProvider
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.User
 
 class SettingsFragment : Fragment() {
 
+    private lateinit var password: String
     private lateinit var signOutButton: Button
     private var auth = FirebaseAuth.getInstance()
     private lateinit var imgView: ImageView
@@ -109,9 +111,31 @@ class SettingsFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        // Error occurred while fetching user data
+                        Toast.makeText(requireContext(),"data update failed", Toast.LENGTH_LONG).show()
                     }
                 })
+
+            if(user.nickname != nickname){
+                val credential = EmailAuthProvider.getCredential(currentUser.email!!, password)
+
+                currentUser.reauthenticate(credential)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // User reauthentication successful, continue with changing the email
+                            currentUser.updateEmail(user.email!!)
+                                .addOnCompleteListener { task1 ->
+                                    if (task1.isSuccessful) {
+                                        // Email updated successfully
+                                    } else {
+                                        Toast.makeText(requireContext(),"data update failed", Toast.LENGTH_LONG).show()
+                                    }
+                                }                        } else {
+                            Toast.makeText(requireContext(),"data update failed", Toast.LENGTH_LONG).show()
+                        }
+                    }
+            }
+
+
         }
     }
 
@@ -141,6 +165,7 @@ class SettingsFragment : Fragment() {
                         val userSnapshot = snapshot.children.first()
                         nickname = userSnapshot.child("nickname").value.toString()
                         occupation = userSnapshot.child("profession").value.toString()
+                        password = userSnapshot.child("password").value.toString()
                         imgUrl = userSnapshot.child("imgURI").value.toString()
                         displayUserData()
                     } else {
@@ -149,7 +174,7 @@ class SettingsFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Toast.makeText(requireContext(),"data loading failed", Toast.LENGTH_LONG).show()
                 }
             })
     }
