@@ -108,6 +108,18 @@
                 android:background="@drawable/chat_msg_input_background"
                 android:orientation="horizontal">
 
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/mic_button_desc"
+                    android:onClick="onVoiceMessageClick"
+                    android:paddingStart="@dimen/chat_button_padding"
+                    android:paddingEnd="@dimen/chat_button_padding"
+                    app:srcCompat="@android:drawable/ic_btn_speak_now" />
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/MessageInputEditText"
                     android:layout_width="match_parent"
@@ -116,19 +128,20 @@
                     android:hint="@string/chat_message_hint"
                     android:paddingStart="@dimen/chat_msg_padding_lr"
                     android:paddingEnd="@dimen/chat_msg_padding_lr"
-                    android:textColorHint="#546E7A"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
                     tools:ignore="TextContrastCheck" />
 
-                <ImageButton
-                    android:id="@+id/imageButton"
+                <ImageView
+                    android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
-                    android:background="@color/transparent"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    app:srcCompat="@android:drawable/ic_btn_speak_now"
-                    android:contentDescription="@string/mic_button_desc" />
+                    android:onClick="onSendButtonPressed"
+                    android:paddingStart="@dimen/chat_button_padding"
+                    android:paddingEnd="@dimen/chat_button_padding"
+                    app:srcCompat="@android:drawable/ic_menu_send"
+                    android:contentDescription="@string/send_button_dsc" />
             </LinearLayout>
 
         </com.google.android.material.textfield.TextInputLayout>

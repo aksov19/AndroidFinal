@@ -9,11 +9,12 @@ import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import ge.aksovreli.messengerapp.viewmodels.chat.AudioManager
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val signedInUid: String) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val signedInUid: String, private val audioManager: AudioManager) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(
             LayoutInflater
@@ -27,7 +28,7 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
     }
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        holder.bindItem(messageItems[position], signedInUid)
+        holder.bindItem(messageItems[position], signedInUid, audioManager)
     }
 
     class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,7 +40,7 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
         private var spaceRight = view.findViewById<Space>(R.id.SpaceR)
         private var timeRight = view.findViewById<TextView>(R.id.timeViewR)
 
-        fun bindItem(item: MessageItem, signedInUid: String) {
+        fun bindItem(item: MessageItem, signedInUid: String, audioManager: AudioManager) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = item.time!!
             val timeText = calendar.get(Calendar.HOUR_OF_DAY).toString() + ":" + calendar.get(Calendar.MINUTE).toString()
@@ -65,6 +66,15 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
 
                 spaceRight.visibility = View.VISIBLE
                 timeRight.visibility = View.VISIBLE
+            }
+
+            if (item.audioUri == "") {
+                messageButtonView.visibility = View.GONE
+            } else {
+                messageButtonView.visibility = View.VISIBLE
+                messageButtonView.setOnClickListener {
+                    audioManager.playAudio(item.audioUri!!)
+                }
             }
         }
     }

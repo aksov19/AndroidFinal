@@ -39,7 +39,6 @@
             android:id="@+id/messageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/chat_msg_padding_tb"
             android:text="@string/message"
             android:textColor="@android:color/white"
             android:textSize="@dimen/chat_msg_font_size" />
@@ -50,6 +49,7 @@
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:contentDescription="@string/play_voice_message_desc"
+            android:paddingTop="@dimen/chat_msg_padding_tb"
             app:srcCompat="@android:drawable/ic_media_play"
             tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
