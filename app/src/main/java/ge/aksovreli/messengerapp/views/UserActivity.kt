@@ -1,8 +1,8 @@
 package ge.aksovreli.messengerapp.views
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.UserAdapter
