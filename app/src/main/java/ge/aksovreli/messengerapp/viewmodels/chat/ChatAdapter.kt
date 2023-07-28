@@ -9,10 +9,9 @@ import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ge.aksovreli.messengerapp.viewmodels.chat.AudioManager
 import ge.aksovreli.messengerapp.models.MessageItem
-import java.util.*
-import kotlin.collections.ArrayList
+import ge.aksovreli.messengerapp.viewmodels.chat.AudioManager
+import java.util.Calendar
 
 
 class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val signedInUid: String, private val audioManager: AudioManager) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {

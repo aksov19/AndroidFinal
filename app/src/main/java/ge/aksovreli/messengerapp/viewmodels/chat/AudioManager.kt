@@ -6,7 +6,6 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import androidx.core.net.toUri
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.File

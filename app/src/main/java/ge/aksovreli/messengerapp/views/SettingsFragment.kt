@@ -1,11 +1,10 @@
 package ge.aksovreli.messengerapp.views
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,27 +12,33 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import ge.aksovreli.messengerapp.models.User as myUser
-import com.bumptech.glide.Glide
-import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.User
+import java.io.IOException
+import kotlin.math.log
+import ge.aksovreli.messengerapp.models.User as myUser
 
 class SettingsFragment : Fragment() {
 
+    private var profileChanged: Boolean = false
     private lateinit var password: String
     private lateinit var signOutButton: Button
     private var auth = FirebaseAuth.getInstance()
     private lateinit var imgView: ImageView
     private lateinit var nicknameField: TextView
     private lateinit var occupationField: TextView
-    private var imgUrl: String? = null
+    private var imgUri: String? = null
     private lateinit var occupation: String
     private lateinit var nickname: String
     private lateinit var view: View
@@ -44,7 +49,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-         view = inflater.inflate(R.layout.fragment_settings, container, false)
+        view = inflater.inflate(R.layout.fragment_settings, container, false)
         return view
     }
 
@@ -61,11 +66,11 @@ class SettingsFragment : Fragment() {
         }
         imgView = view.findViewById<ImageView>(R.id.avatarView)
         imgView.setOnClickListener{
-            uploadImage()
+            openImagePicker()
         }
         val updateButton = view.findViewById<Button>(R.id.updateButton)
         updateButton.setOnClickListener {
-            updateInfo(getInfo())
+            getAndUpdateInfo()
         }
         signOutButton = view.findViewById<Button>(R.id.signOutButton)
         signOutButton.setOnClickListener {
@@ -79,8 +84,27 @@ class SettingsFragment : Fragment() {
             requireActivity().finishAffinity()        }
     }
 
-    private fun getInfo(): myUser {
-        return User(nickname = nicknameField.text.toString(), profession = occupationField.text.toString(), imgURI = imgUrl)
+    private fun getAndUpdateInfo() {
+        if (profileChanged) {
+            uploadImage() { url ->
+                imgUri = url
+                Log.v("profileChange", imgUri!!)
+                updateInfo(User(
+                    nickname = nicknameField.text.toString(),
+                    profession = occupationField.text.toString(),
+                    imgURI = imgUri,
+                    password = password
+                ))
+            }
+        } else {
+
+            updateInfo(User(
+                nickname = nicknameField.text.toString(),
+                profession = occupationField.text.toString(),
+                imgURI = imgUri,
+                password = password
+            ))
+        }
     }
 
     private fun updateInfo(user: myUser) {
@@ -97,6 +121,7 @@ class SettingsFragment : Fragment() {
                             val userId = userSnapshot.key
 
                             userId?.let {
+                                Log.v("profileChange", "saving " + user.imgURI!!)
                                 userReference.child(userId).setValue(user)
                                     .addOnSuccessListener {
                                         Toast.makeText(requireContext(),"data successfully updated", Toast.LENGTH_LONG).show()
@@ -114,7 +139,8 @@ class SettingsFragment : Fragment() {
                         Toast.makeText(requireContext(),"data update failed", Toast.LENGTH_LONG).show()
                     }
                 })
-
+            Log.v("crashing", currentUser.email!!)
+            Log.v("crashing", password)
             if(user.nickname != nickname){
                 val credential = EmailAuthProvider.getCredential(currentUser.email!!, password)
 
@@ -139,24 +165,63 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private val REQUEST_IMAGE_PICKER = 1001
-    private fun uploadImage() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_IMAGE_PICKER)
+    private val PICK_IMAGE_REQUEST = 1
+    private lateinit var filePath: Uri
+
+
+    private fun openImagePicker() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        profileChanged = true
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK && data != null) {
-            val selectedImage = data.data
-            imgUrl = selectedImage.toString()
-            // Load the selected image into the ImageView using Glide
-            Glide.with(this)
-                .load(selectedImage)
-                .circleCrop()
-                .into(imgView)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
+            filePath = data.data!!
+            try {
+                Glide.with(this)
+                    .load(filePath)
+                    .circleCrop()
+                    .into(view.findViewById(R.id.avatarView))
+
+            //                val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, filePath)
+//                imgView.setImageBitmap(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
+
+    private fun uploadImage(onComplete: (downloadUrl: String) -> Unit) {
+        Log.v("profileChange", "HERE!!")
+        val storage = FirebaseStorage.getInstance()
+        val storageRef: StorageReference = storage.reference
+
+        // Create a reference to the desired location in Firebase Storage
+        val imageRef: StorageReference = storageRef.child("images/" + System.currentTimeMillis() + ".jpg")
+
+        // Upload the image to Firebase Storage
+        imageRef.putFile(filePath)
+            .addOnSuccessListener {
+                // Image upload successful
+                // You can now get the download URL to save it in the database or use it to display the image
+                imageRef.downloadUrl.addOnCompleteListener { downloadUrlTask ->
+                    if (downloadUrlTask.isSuccessful) {
+                        onComplete(downloadUrlTask.result.toString())
+//                        imgUri = downloadUrlTask.result.toString()
+//                        Log.v("profileChange", "uploaded on " + imgUri!!)
+                        // Save the downloadUrl to your database, if required
+                    }
+                }
+            }
+            .addOnFailureListener {
+                // Image upload failed, handle the error
+            }
+    }
+
     private fun getUserData(email: String) {
         userReference.orderByChild("email").equalTo(email)
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -166,7 +231,8 @@ class SettingsFragment : Fragment() {
                         nickname = userSnapshot.child("nickname").value.toString()
                         occupation = userSnapshot.child("profession").value.toString()
                         password = userSnapshot.child("password").value.toString()
-                        imgUrl = userSnapshot.child("imgURI").value.toString()
+                        imgUri = userSnapshot.child("imgURI").value.toString()
+                        Log.v("crashing", password)
                         displayUserData()
                     } else {
                         // User not found
@@ -184,15 +250,14 @@ class SettingsFragment : Fragment() {
         nicknameField = view.findViewById(R.id.nicknameField)
         nicknameField.text = nickname
         occupationField.text = occupation
-        imgUrl?.let {
-            Log.v("debug", it)
-            if (imgUrl != "null" && imgUrl != "") {
+        imgUri?.let {
+            Log.v("profileChange", imgUri!!)
+            if (imgUri != "null" && imgUri != "") {
                 Glide.with(this)
-                    .load(imgUrl)
+                    .load(imgUri)
                     .circleCrop()
                     .into(view.findViewById(R.id.avatarView))
             }
-        }
-    }
+        }    }
 
 }
