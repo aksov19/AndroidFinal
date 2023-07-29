@@ -30,13 +30,14 @@
                 android:layout_gravity="bottom">
 
                 <EditText
-                    android:id="@+id/message_edit_text"
+                    android:id="@+id/home_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/search_edt_height"
                     android:layout_marginHorizontal="@dimen/search_edt_marg"
                     android:layout_marginBottom="@dimen/search_edt_marg"
                     android:background="@drawable/cyan_text_border"
                     android:backgroundTint="#C7D7E3E3"
+                    android:drawableStart="?android:attr/actionModeWebSearchDrawable"
                     android:hint="@string/search_hint_text"
                     android:importantForAutofill="no"
                     android:inputType="text"

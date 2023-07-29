@@ -1,9 +1,11 @@
 package ge.aksovreli.messengerapp.views
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ge.aksovreli.messengerapp.ChatItemAdapter
@@ -11,6 +13,7 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.ChatItem
 
 class HomeFragment : Fragment() {
+    private lateinit var searchBar: EditText
     private lateinit var chats_rv: RecyclerView
 
 
@@ -40,5 +43,18 @@ class HomeFragment : Fragment() {
         chat_list.add(item)
         chats_rv.adapter = ChatItemAdapter(chat_list)
 
+        searchBar = view.findViewById(R.id.home_edit_text)
+        searchBar.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+            requireActivity().finishAffinity()
+        }
+
+        searchBar.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val intent = Intent(requireContext(), SearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }

@@ -24,5 +24,6 @@
     <string name="mic_button_desc">mic_button</string>
     <string name="play_voice_message_desc">play voice message</string>
     <string name="send_button_dsc">send_button</string>
+    <string name="search_back_button_description">returns to user page</string>
 
 </resources>
