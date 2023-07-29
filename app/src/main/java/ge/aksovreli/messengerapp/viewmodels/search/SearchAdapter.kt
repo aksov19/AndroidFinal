@@ -11,9 +11,9 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.SearchItem
 
 
-class SearchAdapter(searchItems: ArrayList<SearchItem>) :
+class SearchAdapter(searchItems: MutableList<SearchItem>) :
     RecyclerView.Adapter<SearchAdapter.SearchItemViewHolder>() {
-    private val searchItems: ArrayList<SearchItem>
+    private var searchItems: MutableList<SearchItem>
 
     // Constructor to initialize the search items list
     init {
@@ -38,6 +38,14 @@ class SearchAdapter(searchItems: ArrayList<SearchItem>) :
                 .circleCrop()
                 .into(holder.avatarView)
         }
+        holder.itemView.setOnClickListener {
+            //TODO: open chat page
+        }
+    }
+
+    fun updateData(newList: MutableList<SearchItem>){
+        searchItems = newList
+        notifyDataSetChanged()
     }
 
     // Return the number of search items
