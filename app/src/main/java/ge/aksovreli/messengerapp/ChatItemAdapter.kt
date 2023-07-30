@@ -38,6 +38,9 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
                 .circleCrop()
                 .into(holder.avatarView)
         }
+        holder.itemView.setOnClickListener {
+            //TODO: open chat page
+        }
     }
 
     // Return the number of chat items

@@ -14,7 +14,7 @@ import ge.aksovreli.messengerapp.models.ChatItem
 
 class HomeFragment : Fragment() {
     private lateinit var searchBar: EditText
-    private lateinit var chats_rv: RecyclerView
+    private lateinit var chatsRV: RecyclerView
 
 
     override fun onCreateView(
@@ -27,32 +27,27 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chats_rv = view.findViewById(R.id.chats_rv)
-        val chat_list = ArrayList<ChatItem>()
+        chatsRV = view.findViewById(R.id.chats_rv)
+        val chatList = ArrayList<ChatItem>()
         val item = ChatItem(name = "Test Name", last_message = "text text text text text text text text text text text text ", date = "15 min")
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chat_list.add(item)
-        chats_rv.adapter = ChatItemAdapter(chat_list)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatList.add(item)
+        chatsRV.adapter = ChatItemAdapter(chatList)
 
         searchBar = view.findViewById(R.id.home_edit_text)
-        searchBar.setOnClickListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            startActivity(intent)
-            requireActivity().finishAffinity()
-        }
-
         searchBar.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 val intent = Intent(requireContext(), SearchActivity::class.java)
+                intent.putExtra("called_by", "search bar")
                 startActivity(intent)
             }
         }

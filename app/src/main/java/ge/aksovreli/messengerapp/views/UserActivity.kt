@@ -1,37 +1,46 @@
 package ge.aksovreli.messengerapp.views
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.UserAdapter
 
 class UserActivity : AppCompatActivity() {
 
-    private lateinit var settings_button: ImageButton
-    private lateinit var home_button: ImageButton
-    private lateinit var view_pager: ViewPager2
+    private lateinit var floatingButton: FloatingActionButton
+    private lateinit var settingsButton: ImageButton
+    private lateinit var homeButton: ImageButton
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        view_pager = findViewById(R.id.user_viewpager)
-        view_pager.adapter = UserAdapter(this, arrayListOf(HomeFragment(), SettingsFragment()))
+        viewPager = findViewById(R.id.user_viewpager)
+        viewPager.adapter = UserAdapter(this, arrayListOf(HomeFragment(), SettingsFragment()))
 
-        home_button = findViewById(R.id.home_button)
-        settings_button = findViewById(R.id.settings_button)
+        homeButton = findViewById(R.id.home_button)
+        settingsButton = findViewById(R.id.settings_button)
+        floatingButton = findViewById(R.id.floating_button)
 
-        home_button.setOnClickListener{
-            if (view_pager.currentItem != 0){
-                view_pager.currentItem = 0
+        homeButton.setOnClickListener{
+            if (viewPager.currentItem != 0){
+                viewPager.currentItem = 0
             }
         }
-        settings_button.setOnClickListener{
-            if (view_pager.currentItem != 1){
-                view_pager.currentItem = 1
+        settingsButton.setOnClickListener{
+            if (viewPager.currentItem != 1){
+                viewPager.currentItem = 1
             }
+        }
+        floatingButton.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.putExtra("called_by", "floating button")
+            startActivity(intent)
         }
     }
 
