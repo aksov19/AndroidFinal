@@ -5,10 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -18,6 +22,8 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.SearchItem
 import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.search.SearchAdapter
+import ge.aksovreli.messengerapp.viewmodels.search.SearchViewModel
+import ge.aksovreli.messengerapp.viewmodels.signin.SignInViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -29,6 +35,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
     private lateinit var backButton: ImageButton
     private lateinit var searchRV: RecyclerView
+
+    private val viewModel: SearchViewModel by viewModels {
+        SearchViewModel.getViewModelFactory(
+            applicationContext
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,68 +66,69 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private var searchJob: Job? = null
-    private fun placeholderSearch(){
+    private fun floatingSearch(){
         searchRV = findViewById(R.id.searchRV)
         adapter = SearchAdapter(mutableListOf())
         searchRV.adapter = adapter
-        getUsers("")
+        viewModel.getUsers(""){users ->  updateList(users)}
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed in this case
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed in this case
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val searchText = s?.toString()?.trim()
                 if (searchText != null && searchText.length >= 3) {
-                    // Cancel the previous search job if it exists
                     searchJob?.cancel()
-                    // Start a new search job with debounce
                     searchJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000) // Wait for 1 second after the user stops typing
-                        // Perform the search based on the entered text here
-                        // Call a function to send the query to Firebase and display the results.
-                        getUsers(searchText)
+                        delay(1000)
+                        viewModel.getUsers(searchText){users ->  updateList(users)}
                     }
-                } else {
-                    // Clear the search results or show all users if the search text is less than 3 characters.
-                    // You can decide how you want to handle this case.
+                }
+            }
+        })
+    }
+    private fun barSearch(){
+        searchRV = findViewById(R.id.searchRV)
+        adapter = SearchAdapter(mutableListOf())
+        searchRV.adapter = adapter
+        viewModel.getFriends(""){friends -> updateFriends(friends)}
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val searchText = s?.toString()?.trim()
+                if (searchText != null && searchText.length >= 3) {
+                    searchJob?.cancel()
+                    searchJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        viewModel.getFriends(searchText){friends -> updateFriends(friends)}
+                    }
                 }
             }
         })
     }
 
-    private fun floatingSearch(){
-        placeholderSearch()
-    }
-
-    private fun getUsers(query: String){
+    private fun updateFriends(userList: MutableList<String>) {
         val userReference = Firebase.database.getReference("users")
-        userReference.orderByChild("nickname")
-            .startAt(query)
-            .endAt("$query\uf8ff")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // Process the queried users here
-                    val userList = mutableListOf<User>()
-
-                    for (userSnapshot in snapshot.children) {
-                        // Convert DataSnapshot to User object and add to the list
-                        val user = userSnapshot.getValue(User::class.java)
-                        user?.let { userList.add(it) }
+        val searchList = mutableListOf<SearchItem>()
+        for (uid in userList) {
+            userReference.orderByChild("uid").equalTo(uid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val userSnapshot = snapshot.children.first()
+                            searchList.add(SearchItem(name = userSnapshot.child("nickname").value.toString(),
+                            profession = userSnapshot.child("profession").value.toString(),
+                            imgUrl = userSnapshot.child("imgURI").value.toString()))
+                        } else {
+                            // User not found
+                        }
                     }
 
-                    updateList(userList)
-                }
-
-
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle any error that occurs during the query
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+        }
+        adapter.updateData(searchList)
     }
 
     private fun updateList(userList: MutableList<User>) {
@@ -126,9 +139,6 @@ class SearchActivity : AppCompatActivity() {
         adapter.updateData(searchList)
     }
 
-    private fun barSearch(){
-        placeholderSearch()
-    }
 
     private fun userToSearchItem(user: User) : SearchItem{
         return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI)
