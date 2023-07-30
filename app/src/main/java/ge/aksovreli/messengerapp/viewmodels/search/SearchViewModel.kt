@@ -21,18 +21,22 @@ class SearchViewModel: ViewModel() {
     }
 
 
-    fun getUsers(query: String, onUsersLoaded: (MutableList<User>) -> Unit){
+    fun getUsers(query: String, onUsersLoaded: (MutableList<User>, MutableList<String>) -> Unit){
         userReference.orderByChild("nickname")
             .startAt(query)
             .endAt("$query\uf8ff")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val userList = mutableListOf<User>()
+                    val userUids = mutableListOf<String>()
+
                     for (userSnapshot in snapshot.children) {
                         val user = userSnapshot.getValue(User::class.java)
+                        val uid = userSnapshot.key
                         user?.let { userList.add(it) }
+                        uid?.let { userUids.add(it) }
                     }
-                    onUsersLoaded(userList)
+                    onUsersLoaded(userList, userUids)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -42,7 +46,7 @@ class SearchViewModel: ViewModel() {
     }
 
 
-    fun getFriends(query: String, onUsersLoaded: (MutableList<String>) -> Unit){
+    fun getFriends(onUsersLoaded: (MutableList<String>) -> Unit){
         val currentUser = FirebaseAuth.getInstance().currentUser
         val myUid = currentUser!!.uid
         val messageReference = Firebase.database.getReference("messages").child(myUid)

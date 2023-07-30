@@ -70,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
         searchRV = findViewById(R.id.searchRV)
         adapter = SearchAdapter(mutableListOf())
         searchRV.adapter = adapter
-        viewModel.getUsers(""){users ->  updateList(users)}
+        viewModel.getUsers(""){users, uids ->  updateList(users, uids)}
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -80,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
                     searchJob?.cancel()
                     searchJob = CoroutineScope(Dispatchers.Main).launch {
                         delay(1000)
-                        viewModel.getUsers(searchText){users ->  updateList(users)}
+                        viewModel.getUsers(searchText){users, uids ->  updateList(users, uids)}
                     }
                 }
             }
@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
         searchRV = findViewById(R.id.searchRV)
         adapter = SearchAdapter(mutableListOf())
         searchRV.adapter = adapter
-        viewModel.getFriends(""){friends -> updateFriends(friends)}
+        viewModel.getFriends(){friends -> updateFriends(friends, "")}
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -100,14 +100,14 @@ class SearchActivity : AppCompatActivity() {
                     searchJob?.cancel()
                     searchJob = CoroutineScope(Dispatchers.Main).launch {
                         delay(1000)
-                        viewModel.getFriends(searchText){friends -> updateFriends(friends)}
+                        viewModel.getFriends(){friends -> updateFriends(friends, searchText)}
                     }
                 }
             }
         })
     }
 
-    private fun updateFriends(userList: MutableList<String>) {
+    private fun updateFriends(userList: MutableList<String>, query: String) {
         val userReference = Firebase.database.getReference("users")
         val searchList = mutableListOf<SearchItem>()
         for (uid in userList) {
@@ -118,7 +118,7 @@ class SearchActivity : AppCompatActivity() {
                             val userSnapshot = snapshot.children.first()
                             searchList.add(SearchItem(name = userSnapshot.child("nickname").value.toString(),
                             profession = userSnapshot.child("profession").value.toString(),
-                            imgUrl = userSnapshot.child("imgURI").value.toString()))
+                            imgUrl = userSnapshot.child("imgURI").value.toString(), uid = uid))
                         } else {
                             // User not found
                         }
@@ -128,20 +128,25 @@ class SearchActivity : AppCompatActivity() {
                     }
                 })
         }
-        adapter.updateData(searchList)
+        adapter.updateData(filterByName(searchList, query))
     }
 
-    private fun updateList(userList: MutableList<User>) {
+    private fun filterByName(usersList: MutableList<SearchItem>, name: String): MutableList<SearchItem> {
+        val filteredUsers = usersList.filter { user ->
+            user.name?.contains(name, ignoreCase = true) == true
+        }.toMutableList()
+        return filteredUsers
+    }
+
+    private fun updateList(userList: MutableList<User>, uids: MutableList<String>) {
         val searchList = mutableListOf<SearchItem>()
-        for(user in userList){
-            searchList.add(userToSearchItem(user))
+        for ((user, uid) in userList.zip(uids)) {
+            searchList.add(userToSearchItem(user, uid))
         }
         adapter.updateData(searchList)
     }
 
-
-    private fun userToSearchItem(user: User) : SearchItem{
-        return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI)
+    private fun userToSearchItem(user: User, uid: String) : SearchItem{
+        return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI, uid = uid)
     }
-
 }
