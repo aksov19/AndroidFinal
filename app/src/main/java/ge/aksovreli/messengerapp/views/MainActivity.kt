@@ -1,12 +1,12 @@
 package ge.aksovreli.messengerapp.views
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.MainActivityBinding
+import ge.aksovreli.messengerapp.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding
@@ -22,13 +22,12 @@ class MainActivity : AppCompatActivity() {
     private fun chooseActivity(){
         val currentUser = Firebase.auth.currentUser
 
-        // TODO: change start page according to saved user
         if (currentUser == null) {
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             println("user was not saved")
         } else {
-            val intent = Intent(this, SignInActivity::class.java)
+            val intent = Intent(this, UserActivity::class.java)
             startActivity(intent)
             println("user was saved")
         }
