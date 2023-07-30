@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,7 @@ import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -56,18 +58,13 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
         binding = ChatActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // TODO: add getting signed in user and other user
-        userUid = "1"
-        otherUid = "2"
+        userUid = Firebase.auth.currentUser!!.uid
+        otherUid = intent.getStringExtra("other_uid")!!
 
         loadOtherUser()
         loadMessages()
         setListeners()
         askForPermissions()
-
-        // TODO: remove this part later
-        val user = User("hi hello", "superduper", )
-        Firebase.auth.signInWithEmailAndPassword(user.email!!, user.password!!)
     }
 
     private fun setListeners() {
@@ -75,11 +72,8 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
         binding.toolbar.setNavigationOnClickListener(this)
 
         // Add message list update listener
-        val messagesDBPath = if (userUid > otherUid) {
-            Firebase.database.getReference("messages").child(userUid).child(otherUid)
-        } else {
-            Firebase.database.getReference("messages").child(otherUid).child(userUid)
-        }
+        val messagesDBPath = Firebase.database.getReference("messages").child(userUid).child(otherUid)
+
         messagesDBPath.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 loadMessages()
@@ -110,7 +104,13 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
             } else {
                 binding.nameView.text = it.second?.nickname ?: ""
                 binding.proffesionView.text = it.second?.profession ?: ""
-                // TODO: replace image too
+                val imgUri = it.second?.imgURI
+                if (imgUri != "null" && imgUri != "") {
+                    Glide.with(this)
+                        .load(imgUri)
+                        .circleCrop()
+                        .into(binding.userImageView)
+                }
             }
         }
     }
@@ -150,8 +150,7 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
 
     // Moves to previous page when navigation button is clicked
     override fun onClick(p0: View?) {
-        // TODO: add logic when navigation button is clicked (moving back a page)
-        Toast.makeText(this, "navigation button clicked", Toast.LENGTH_LONG).show()
+        finish()
     }
 
     // Adds message send listener on enter key

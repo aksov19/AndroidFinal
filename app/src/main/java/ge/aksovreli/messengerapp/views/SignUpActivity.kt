@@ -1,5 +1,6 @@
 package ge.aksovreli.messengerapp.views
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -46,8 +47,11 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.registerUser(user).observe(this) { errorMsg ->
             if (errorMsg != null) {
                 Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+            } else {
+                val intent = Intent(this, UserActivity::class.java)
+                startActivity(intent)
+                finish()
             }
-            // TODO: else redirect to user's page
         }
     }
 }
