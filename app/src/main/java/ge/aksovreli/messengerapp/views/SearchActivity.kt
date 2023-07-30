@@ -101,14 +101,17 @@ class SearchActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     // Process the queried users here
                     val userList = mutableListOf<User>()
+                    val userUids = mutableListOf<String>()
 
                     for (userSnapshot in snapshot.children) {
                         // Convert DataSnapshot to User object and add to the list
                         val user = userSnapshot.getValue(User::class.java)
+                        val uid = userSnapshot.key
                         user?.let { userList.add(it) }
+                        uid?.let { userUids.add(it) }
                     }
 
-                    updateList(userList)
+                    updateList(userList, userUids)
                 }
 
 
@@ -118,10 +121,10 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    private fun updateList(userList: MutableList<User>) {
+    private fun updateList(userList: MutableList<User>, uids: MutableList<String>) {
         val searchList = mutableListOf<SearchItem>()
-        for(user in userList){
-            searchList.add(userToSearchItem(user))
+        for((user, uid) in userList.zip(uids)){
+            searchList.add(userToSearchItem(user, uid))
         }
         adapter.updateData(searchList)
     }
@@ -130,8 +133,8 @@ class SearchActivity : AppCompatActivity() {
         placeholderSearch()
     }
 
-    private fun userToSearchItem(user: User) : SearchItem{
-        return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI)
+    private fun userToSearchItem(user: User, uid: String) : SearchItem{
+        return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI, uid = uid)
     }
 
 }
