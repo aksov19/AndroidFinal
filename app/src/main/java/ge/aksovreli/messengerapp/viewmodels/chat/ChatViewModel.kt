@@ -37,12 +37,7 @@ class ChatViewModel: ViewModel() {
         val ret = MutableLiveData<Pair<String?, ArrayList<MessageItem>>>()
 
         viewModelScope.launch {
-            val messagesDBPath = if (uid1 > uid2) {
-                Firebase.database.getReference("messages").child(uid1).child(uid2)
-            } else {
-                Firebase.database.getReference("messages").child(uid2).child(uid1)
-            }
-
+            val messagesDBPath = Firebase.database.getReference("messages").child(uid1).child(uid2)
             val messages = ArrayList<MessageItem>()
 
             messagesDBPath.get().addOnSuccessListener { snapshot ->
@@ -65,14 +60,15 @@ class ChatViewModel: ViewModel() {
         val errorMessage = MutableLiveData<String?>()
 
         viewModelScope.launch {
-            val messagesDBPath = if (uid1 > uid2) {
-                Firebase.database.getReference("messages").child(uid1).child(uid2)
-            } else {
-                Firebase.database.getReference("messages").child(uid2).child(uid1)
+            val messagesDBPath1 = Firebase.database.getReference("messages").child(uid1).child(uid2)
+            val messagesDBPath2 = Firebase.database.getReference("messages").child(uid2).child(uid1)
+
+            messagesDBPath1.push().key?.let {
+                messagesDBPath1.child(it).setValue(messageItem)
             }
 
-            messagesDBPath.push().key?.let {
-                messagesDBPath.child(it).setValue(messageItem)
+            messagesDBPath2.push().key?.let {
+                messagesDBPath2.child(it).setValue(messageItem)
             }
 
             errorMessage.postValue(null)

@@ -11,7 +11,7 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.SearchItem
 
 
-class SearchAdapter(searchItems: MutableList<SearchItem>) :
+class SearchAdapter(searchItems: MutableList<SearchItem>, private val searchItemListener: SearchItemListener) :
     RecyclerView.Adapter<SearchAdapter.SearchItemViewHolder>() {
     private var searchItems: MutableList<SearchItem>
 
@@ -38,8 +38,9 @@ class SearchAdapter(searchItems: MutableList<SearchItem>) :
                 .circleCrop()
                 .into(holder.avatarView)
         }
+
         holder.itemView.setOnClickListener {
-            //TODO: open chat page
+            searchItemListener.onSearchItemClicked(searchItem.uid)
         }
     }
 
