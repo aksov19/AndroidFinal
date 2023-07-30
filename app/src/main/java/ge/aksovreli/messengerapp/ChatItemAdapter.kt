@@ -8,9 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ge.aksovreli.messengerapp.models.ChatItem
+import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
 
 
-class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
+class ChatItemAdapter(chatItems: ArrayList<ChatItem>, private val searchItemListener: SearchItemListener) :
     RecyclerView.Adapter<ChatItemAdapter.ChatItemViewHolder>() {
     private val chatItems: ArrayList<ChatItem>
 
@@ -38,8 +39,9 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>) :
                 .circleCrop()
                 .into(holder.avatarView)
         }
+
         holder.itemView.setOnClickListener {
-            //TODO: open chat page
+            searchItemListener.onSearchItemClicked(chatItem.uid)
         }
     }
 

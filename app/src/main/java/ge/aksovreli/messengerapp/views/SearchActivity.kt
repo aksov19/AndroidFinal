@@ -1,6 +1,7 @@
 package ge.aksovreli.messengerapp.views
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +9,7 @@ import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,13 +20,14 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.SearchItem
 import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.search.SearchAdapter
+import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), SearchItemListener {
     private lateinit var adapter: SearchAdapter
     private lateinit var searchEditText: EditText
     private lateinit var backButton: ImageButton
@@ -56,7 +59,7 @@ class SearchActivity : AppCompatActivity() {
     private var searchJob: Job? = null
     private fun placeholderSearch(){
         searchRV = findViewById(R.id.searchRV)
-        adapter = SearchAdapter(mutableListOf())
+        adapter = SearchAdapter(mutableListOf(), this)
         searchRV.adapter = adapter
         getUsers("")
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -135,6 +138,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun userToSearchItem(user: User, uid: String) : SearchItem{
         return SearchItem(name = user.nickname, profession = user.profession, imgUrl = user.imgURI, uid = uid)
+    }
+
+    override fun onSearchItemClicked(uid: String?) {
+        if (uid != null) {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("other_uid", uid)
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Error getting uid", Toast.LENGTH_LONG).show()
+        }
     }
 
 }
