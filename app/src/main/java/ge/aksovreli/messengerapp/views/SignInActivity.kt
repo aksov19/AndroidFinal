@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.tashila.pleasewait.PleaseWaitDialog
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.SignInActivityBinding
 import ge.aksovreli.messengerapp.models.User
@@ -41,17 +42,23 @@ class SignInActivity : AppCompatActivity() {
             password = password,
         )
 
+        val wait = PleaseWaitDialog(this)
+        wait.setTitle("Signing In")
+        wait.setMessage("Please wait")
+        wait.isCancelable = false
+        wait.show()
+
         viewModel.signInUser(user).observe(this) { errorMsg ->
             if (errorMsg != null) {
                 Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
                 val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)
-                finish()
             } else {
                 val intent = Intent(this, UserActivity::class.java)
                 startActivity(intent)
-                finish()
             }
+            wait.dismiss()
+            finish()
         }
     }
 

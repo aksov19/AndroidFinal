@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.tashila.pleasewait.PleaseWaitDialog
 import ge.aksovreli.messengerapp.ChatAdapter
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
@@ -59,8 +60,17 @@ class ChatActivity: AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, O
         userUid = Firebase.auth.currentUser!!.uid
         otherUid = intent.getStringExtra("other_uid")!!
 
+        val wait = PleaseWaitDialog(this)
+        wait.setTitle("Loading messages")
+        wait.setMessage("Please wait")
+        wait.isCancelable = false
+        wait.show()
+
         loadOtherUser()
         loadMessages()
+
+        wait.dismiss()
+
         setListeners()
         askForPermissions()
     }

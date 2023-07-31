@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.tashila.pleasewait.PleaseWaitDialog
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
 import ge.aksovreli.messengerapp.viewmodels.user.UserAdapter
@@ -30,8 +31,16 @@ class UserActivity : AppCompatActivity(), SearchItemListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
+        val wait = PleaseWaitDialog(this)
+        wait.setTitle("Loading Main Page")
+        wait.setMessage("Please wait")
+        wait.isCancelable = false
+        wait.show()
+
         viewPager = findViewById(R.id.user_viewpager)
         viewPager.adapter = UserAdapter(this, arrayListOf(HomeFragment(viewModel, this), SettingsFragment()))
+
+        wait.dismiss()
 
         homeButton = findViewById(R.id.home_button)
         settingsButton = findViewById(R.id.settings_button)

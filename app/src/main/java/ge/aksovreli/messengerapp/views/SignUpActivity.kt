@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.tashila.pleasewait.PleaseWaitDialog
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.SignUpActivityBinding
 import ge.aksovreli.messengerapp.models.User
@@ -44,12 +45,20 @@ class SignUpActivity : AppCompatActivity() {
             profession = profession
         )
 
+        val wait = PleaseWaitDialog(this)
+        wait.setTitle("Signing Up")
+        wait.setMessage("Please wait")
+        wait.isCancelable = false
+        wait.show()
+
         viewModel.registerUser(user).observe(this) { errorMsg ->
             if (errorMsg != null) {
                 Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                wait.dismiss()
             } else {
                 val intent = Intent(this, UserActivity::class.java)
                 startActivity(intent)
+                wait.dismiss()
                 finish()
             }
         }
