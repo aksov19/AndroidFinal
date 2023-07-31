@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tashila.pleasewait.PleaseWaitDialog
@@ -61,6 +62,8 @@ class UserActivity : AppCompatActivity(), SearchItemListener {
             intent.putExtra("called_by", "floating button")
             startActivity(intent)
         }
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     override fun onSearchItemClicked(uid: String?) {

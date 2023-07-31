@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.tashila.pleasewait.PleaseWaitDialog
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.SignUpActivityBinding
@@ -27,6 +28,7 @@ class SignUpActivity : AppCompatActivity() {
 
         binding = SignUpActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     fun onSignUp(view: View){
