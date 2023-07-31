@@ -43,7 +43,9 @@ class ChatAdapter(private val messageItems: ArrayList<MessageItem>, private val 
         fun bindItem(item: MessageItem, signedInUid: String, audioManager: AudioManager) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = item.time!!
-            val timeText = calendar.get(Calendar.HOUR_OF_DAY).toString() + ":" + calendar.get(Calendar.MINUTE).toString()
+            var minStr = calendar.get(Calendar.MINUTE).toString()
+            if (minStr.length == 1) minStr = "0$minStr"
+            val timeText = calendar.get(Calendar.HOUR_OF_DAY).toString() + ":" + minStr
             messageTextView.text = item.message
             timeLeft.text = timeText
             timeRight.text = timeText
