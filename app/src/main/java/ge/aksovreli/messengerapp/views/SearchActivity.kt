@@ -108,6 +108,7 @@ class SearchActivity : AppCompatActivity(), SearchItemListener {
 
     private fun updateFriends(userList: MutableList<String>, query: String) {
         val userReference = Firebase.database.getReference("users")
+        adapter.clear()
         for (uid in userList) {
             userReference.child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {

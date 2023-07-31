@@ -49,6 +49,11 @@ class SearchAdapter(searchItems: MutableList<SearchItem>, private val searchItem
         notifyDataSetChanged()
     }
 
+    fun clear(){
+        searchItems.clear()
+        notifyDataSetChanged()
+    }
+
     fun addItem(newItem: SearchItem){
         searchItems.add(newItem)
         notifyItemInserted(searchItems.size)
