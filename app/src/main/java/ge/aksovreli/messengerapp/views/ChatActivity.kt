@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
@@ -29,7 +28,6 @@ import ge.aksovreli.messengerapp.ChatAdapter
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.databinding.ChatActivityBinding
 import ge.aksovreli.messengerapp.models.MessageItem
-import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.chat.AudioManager
 import ge.aksovreli.messengerapp.viewmodels.chat.ChatViewModel
 import kotlin.math.abs

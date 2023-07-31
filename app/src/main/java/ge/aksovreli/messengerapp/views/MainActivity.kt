@@ -1,12 +1,12 @@
 package ge.aksovreli.messengerapp.views
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import ge.aksovreli.messengerapp.databinding.MainActivityBinding
 import ge.aksovreli.messengerapp.R
+import ge.aksovreli.messengerapp.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding

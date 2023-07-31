@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import ge.aksovreli.messengerapp.ChatItemAdapter
 import ge.aksovreli.messengerapp.R
-import ge.aksovreli.messengerapp.models.ChatItem
 import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
+import ge.aksovreli.messengerapp.viewmodels.user.ChatItemAdapter
+import ge.aksovreli.messengerapp.viewmodels.user.UserViewModel
 
-class HomeFragment(private val searchItemListener: SearchItemListener) : Fragment() {
+class HomeFragment(private val viewModel: UserViewModel, private val searchItemListener: SearchItemListener) : Fragment() {
+    private lateinit var adapter: ChatItemAdapter
     private lateinit var searchBar: EditText
     private lateinit var chatsRV: RecyclerView
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,22 +28,6 @@ class HomeFragment(private val searchItemListener: SearchItemListener) : Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chatsRV = view.findViewById(R.id.chats_rv)
-        val chatList = ArrayList<ChatItem>()
-        val item = ChatItem(name = "Test Name", last_message = "text text text text text text text text text text text text ", date = "15 min", uid= "iqk4uaMNBfhSUkuIsNpd1jIVnR23")
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatList.add(item)
-        chatsRV.adapter = ChatItemAdapter(chatList, searchItemListener)
-
         searchBar = view.findViewById(R.id.home_edit_text)
         searchBar.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -52,6 +35,14 @@ class HomeFragment(private val searchItemListener: SearchItemListener) : Fragmen
                 intent.putExtra("called_by", "search bar")
                 startActivity(intent)
             }
+        }
+
+        chatsRV = view.findViewById(R.id.chats_rv)
+        adapter = ChatItemAdapter(mutableListOf(), searchItemListener)
+        chatsRV.adapter = adapter
+
+        viewModel.getFriends {message ->
+            adapter.addItem(message)
         }
     }
 }

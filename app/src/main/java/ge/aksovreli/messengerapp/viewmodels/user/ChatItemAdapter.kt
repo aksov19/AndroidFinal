@@ -1,4 +1,4 @@
-package ge.aksovreli.messengerapp
+package ge.aksovreli.messengerapp.viewmodels.user
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,13 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.ChatItem
 import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
 
 
-class ChatItemAdapter(chatItems: ArrayList<ChatItem>, private val searchItemListener: SearchItemListener) :
+class ChatItemAdapter(
+    chatItems: MutableList<ChatItem>,
+    private val searchItemListener: SearchItemListener
+) :
     RecyclerView.Adapter<ChatItemAdapter.ChatItemViewHolder>() {
-    private val chatItems: ArrayList<ChatItem>
+    private val chatItems: MutableList<ChatItem>
 
     // Constructor to initialize the chat items list
     init {
@@ -48,6 +52,12 @@ class ChatItemAdapter(chatItems: ArrayList<ChatItem>, private val searchItemList
     // Return the number of chat items
     override fun getItemCount(): Int {
         return chatItems.size
+    }
+
+    fun addItem(message: ChatItem) {
+        chatItems.add(message)
+        chatItems.sortBy { item -> item.date }
+        notifyDataSetChanged()
     }
 
     // ViewHolder class for caching views

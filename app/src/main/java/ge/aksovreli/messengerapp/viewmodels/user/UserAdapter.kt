@@ -1,10 +1,11 @@
-package ge.aksovreli.messengerapp
+package ge.aksovreli.messengerapp.viewmodels.user
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class UserAdapter(activity: FragmentActivity, private val fragments: ArrayList<Fragment>): FragmentStateAdapter(activity) {
+class UserAdapter(activity: FragmentActivity, private val fragments: ArrayList<Fragment>) :
+    FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int {
         return fragments.size

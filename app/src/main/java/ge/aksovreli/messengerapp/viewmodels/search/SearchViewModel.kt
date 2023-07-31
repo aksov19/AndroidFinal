@@ -10,7 +10,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.models.User
-import ge.aksovreli.messengerapp.viewmodels.signin.SignInViewModelFactory
 
 class SearchViewModel: ViewModel() {
     private val userReference = Firebase.database.getReference("users")

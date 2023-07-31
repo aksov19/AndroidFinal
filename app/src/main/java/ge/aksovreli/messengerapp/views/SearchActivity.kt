@@ -2,18 +2,16 @@ package ge.aksovreli.messengerapp.views
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -23,9 +21,8 @@ import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.SearchItem
 import ge.aksovreli.messengerapp.models.User
 import ge.aksovreli.messengerapp.viewmodels.search.SearchAdapter
-import ge.aksovreli.messengerapp.viewmodels.search.SearchViewModel
-import ge.aksovreli.messengerapp.viewmodels.signin.SignInViewModel
 import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
+import ge.aksovreli.messengerapp.viewmodels.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -111,15 +108,11 @@ class SearchActivity : AppCompatActivity(), SearchItemListener {
 
     private fun updateFriends(userList: MutableList<String>, query: String) {
         val userReference = Firebase.database.getReference("users")
-        val searchList = mutableListOf<SearchItem>()
         for (uid in userList) {
             userReference.child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val user = snapshot.getValue(User::class.java)
-//                        Log.v("get_friend_list", user.toString())
-//                        searchList.add(userToSearchItem(user!!, uid))
-//                        Log.v("get_friend_list", searchList.toString())
                         if (user?.nickname!!.contains(query, ignoreCase = true))
                             adapter.addItem(userToSearchItem(user, uid))
                     }
@@ -128,8 +121,6 @@ class SearchActivity : AppCompatActivity(), SearchItemListener {
                     }
                 })
         }
-//        Log.v("get_friend_list", searchList.toString())
-//        adapter.updateData(filterByName(searchList, query))
     }
 
     private fun filterByName(usersList: MutableList<SearchItem>, name: String): MutableList<SearchItem> {

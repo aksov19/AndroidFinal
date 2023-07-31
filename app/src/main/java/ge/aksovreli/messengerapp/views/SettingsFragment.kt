@@ -26,7 +26,6 @@ import com.google.firebase.storage.StorageReference
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.User
 import java.io.IOException
-import kotlin.math.log
 import ge.aksovreli.messengerapp.models.User as myUser
 
 class SettingsFragment : Fragment() {
