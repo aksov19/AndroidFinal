@@ -1,6 +1,7 @@
 package ge.aksovreli.messengerapp.viewmodels.search
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -51,6 +52,7 @@ class SearchViewModel: ViewModel() {
         val myUid = currentUser!!.uid
         val messageReference = Firebase.database.getReference("messages").child(myUid)
 
+        Log.v("get_friend_list", myUid)
         messageReference
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -58,6 +60,9 @@ class SearchViewModel: ViewModel() {
 
                     for (childSnapshot in snapshot.children) {
                         val userId = childSnapshot.key
+                        if (userId != null) {
+                            Log.v("get_friend_list", userId)
+                        }
                         if (userId != myUid) {
                             usersSet.add(userId!!)
                         }

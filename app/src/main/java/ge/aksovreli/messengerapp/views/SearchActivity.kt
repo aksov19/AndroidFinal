@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity(), SearchItemListener {
     }
     private fun barSearch(){
         searchRV = findViewById(R.id.searchRV)
-        adapter = SearchAdapter(mutableListOf())
+        adapter = SearchAdapter(mutableListOf(), this)
         searchRV.adapter = adapter
         viewModel.getFriends(){friends -> updateFriends(friends, "")}
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -113,24 +113,23 @@ class SearchActivity : AppCompatActivity(), SearchItemListener {
         val userReference = Firebase.database.getReference("users")
         val searchList = mutableListOf<SearchItem>()
         for (uid in userList) {
-            userReference.orderByChild("uid").equalTo(uid)
+            userReference.child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            val userSnapshot = snapshot.children.first()
-                            searchList.add(SearchItem(name = userSnapshot.child("nickname").value.toString(),
-                            profession = userSnapshot.child("profession").value.toString(),
-                            imgUrl = userSnapshot.child("imgURI").value.toString(), uid = uid))
-                        } else {
-                            // User not found
-                        }
+                        val user = snapshot.getValue(User::class.java)
+//                        Log.v("get_friend_list", user.toString())
+//                        searchList.add(userToSearchItem(user!!, uid))
+//                        Log.v("get_friend_list", searchList.toString())
+                        if (user?.nickname!!.contains(query, ignoreCase = true))
+                            adapter.addItem(userToSearchItem(user, uid))
                     }
 
                     override fun onCancelled(error: DatabaseError) {
                     }
                 })
         }
-        adapter.updateData(filterByName(searchList, query))
+//        Log.v("get_friend_list", searchList.toString())
+//        adapter.updateData(filterByName(searchList, query))
     }
 
     private fun filterByName(usersList: MutableList<SearchItem>, name: String): MutableList<SearchItem> {

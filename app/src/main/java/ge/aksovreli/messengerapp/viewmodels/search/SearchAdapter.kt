@@ -49,6 +49,11 @@ class SearchAdapter(searchItems: MutableList<SearchItem>, private val searchItem
         notifyDataSetChanged()
     }
 
+    fun addItem(newItem: SearchItem){
+        searchItems.add(newItem)
+        notifyItemInserted(searchItems.size)
+    }
+
     // Return the number of search items
     override fun getItemCount(): Int {
         return searchItems.size
