@@ -10,6 +10,10 @@ import com.bumptech.glide.Glide
 import ge.aksovreli.messengerapp.R
 import ge.aksovreli.messengerapp.models.ChatItem
 import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 
 class ChatItemAdapter(
@@ -36,7 +40,7 @@ class ChatItemAdapter(
         val chatItem: ChatItem = chatItems[position]
         holder.nameTextView.text = chatItem.name
         holder.lastMessageView.text = chatItem.last_message
-        holder.dateTextView.text = chatItem.date
+        holder.dateTextView.text = formatTime(chatItem.date)
         if (chatItem.avatar != "") {
             Glide.with(holder.itemView.context)
                 .load(chatItem.avatar)
@@ -49,6 +53,25 @@ class ChatItemAdapter(
         }
     }
 
+    private fun formatTime(milliseconds: Long): String {
+        val currentTime = System.currentTimeMillis()
+        val diff = currentTime - milliseconds
+        val diffMinutes = diff / (60 * 1000)
+        val diffHours = diff / (60 * 60 * 1000)
+
+        return when {
+            diffHours < 1 -> "$diffMinutes min"
+            diffHours == 1L -> "$diffHours hour"
+            diffHours > 1 -> "$diffHours hours"
+            else -> {
+                val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                sdf.timeZone = TimeZone.getDefault()
+                val date = Date(milliseconds)
+                sdf.format(date)
+            }
+        }
+    }
+
     // Return the number of chat items
     override fun getItemCount(): Int {
         return chatItems.size
@@ -56,8 +79,12 @@ class ChatItemAdapter(
 
     fun addItem(message: ChatItem) {
         chatItems.add(message)
-        chatItems.sortBy { item -> item.date }
+        chatItems.sortByDescending { item -> item.date }
         notifyDataSetChanged()
+    }
+
+    fun clear() {
+        chatItems.clear()
     }
 
     // ViewHolder class for caching views

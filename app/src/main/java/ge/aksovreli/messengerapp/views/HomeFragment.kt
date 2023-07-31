@@ -13,7 +13,10 @@ import ge.aksovreli.messengerapp.viewmodels.search.SearchItemListener
 import ge.aksovreli.messengerapp.viewmodels.user.ChatItemAdapter
 import ge.aksovreli.messengerapp.viewmodels.user.UserViewModel
 
-class HomeFragment(private val viewModel: UserViewModel, private val searchItemListener: SearchItemListener) : Fragment() {
+class HomeFragment(
+    private val viewModel: UserViewModel,
+    private val searchItemListener: SearchItemListener
+) : Fragment() {
     private lateinit var adapter: ChatItemAdapter
     private lateinit var searchBar: EditText
     private lateinit var chatsRV: RecyclerView
@@ -41,8 +44,17 @@ class HomeFragment(private val viewModel: UserViewModel, private val searchItemL
         adapter = ChatItemAdapter(mutableListOf(), searchItemListener)
         chatsRV.adapter = adapter
 
-        viewModel.getFriends {message ->
-            adapter.addItem(message)
-        }
+//        viewModel.
+        updateList()
+
     }
+
+    private fun updateList() {
+        adapter.clear()
+        viewModel.getFriends({ adapter.clear() }, { message ->
+            adapter.addItem(message)
+        })
+
+    }
+
 }

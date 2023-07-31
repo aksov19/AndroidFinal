@@ -11,8 +11,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.models.User
 
-class SearchViewModel: ViewModel() {
+class SearchViewModel : ViewModel() {
     private val userReference = Firebase.database.getReference("users")
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val myUid = currentUser!!.uid
+    private val messageReference = Firebase.database.getReference("messages").child(myUid)
 
     companion object {
         fun getViewModelFactory(context: Context): SearchViewModelFactory {
@@ -21,7 +24,7 @@ class SearchViewModel: ViewModel() {
     }
 
 
-    fun getUsers(query: String, onUsersLoaded: (MutableList<User>, MutableList<String>) -> Unit){
+    fun getUsers(query: String, onUsersLoaded: (MutableList<User>, MutableList<String>) -> Unit) {
         userReference.orderByChild("nickname")
             .startAt(query)
             .endAt("$query\uf8ff")
@@ -33,6 +36,8 @@ class SearchViewModel: ViewModel() {
                     for (userSnapshot in snapshot.children) {
                         val user = userSnapshot.getValue(User::class.java)
                         val uid = userSnapshot.key
+                        if (uid == myUid)
+                            continue
                         user?.let { userList.add(it) }
                         uid?.let { userUids.add(it) }
                     }
@@ -46,11 +51,7 @@ class SearchViewModel: ViewModel() {
     }
 
 
-    fun getFriends(onUsersLoaded: (MutableList<String>) -> Unit){
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val myUid = currentUser!!.uid
-        val messageReference = Firebase.database.getReference("messages").child(myUid)
-
+    fun getFriends(onUsersLoaded: (MutableList<String>) -> Unit) {
         Log.v("get_friend_list", myUid)
         messageReference
             .addListenerForSingleValueEvent(object : ValueEventListener {

@@ -13,6 +13,11 @@ import com.google.firebase.ktx.Firebase
 import ge.aksovreli.messengerapp.models.ChatItem
 import ge.aksovreli.messengerapp.models.MessageItem
 import ge.aksovreli.messengerapp.models.User
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class UserViewModel : ViewModel() {
     private val userReference = Firebase.database.getReference("users")
@@ -49,17 +54,16 @@ class UserViewModel : ViewModel() {
     }
 
 
-    fun getFriends(onFriendLoaded: (ChatItem) -> Unit) {
+    fun getFriends(clear:() -> Unit, onFriendLoaded: (ChatItem) -> Unit) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val myUid = currentUser!!.uid
         val friendsReference = Firebase.database.getReference("messages").child(myUid)
 
         Log.v("get_friend_list", myUid)
         friendsReference
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val usersSet = mutableListOf<String>()
-
+                    clear()
                     for (childSnapshot in snapshot.children) {
                         val userId = childSnapshot.key
                         if (userId != myUid) {
@@ -96,7 +100,7 @@ class UserViewModel : ViewModel() {
                                     ChatItem(
                                         name = user.nickname.toString(),
                                         last_message = lastMessage.message.toString(),
-                                        date = lastMessage.time.toString(),
+                                        date = lastMessage.time!!,
                                         avatar = user.imgURI.toString(),
                                         uid = uid
                                     )
@@ -126,4 +130,22 @@ class UserViewModel : ViewModel() {
 
     }
 
+    fun formatTime(milliseconds: Long): String {
+        val currentTime = System.currentTimeMillis()
+        val diff = currentTime - milliseconds
+        val diffMinutes = diff / (60 * 1000)
+        val diffHours = diff / (60 * 60 * 1000)
+
+        return when {
+            diffHours < 1 -> "$diffMinutes min"
+            diffHours == 1L -> "$diffHours hour"
+            diffHours > 1 -> "$diffHours hours"
+            else -> {
+                val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                sdf.timeZone = TimeZone.getDefault()
+                val date = Date(milliseconds)
+                sdf.format(date)
+            }
+        }
+    }
 }
